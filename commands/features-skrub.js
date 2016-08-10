@@ -12,8 +12,8 @@ exports.commands = {
 	/* General commands */
 	skrub: function (arg, by, room, cmd) {
 		if (!Settings.settings['skrub']) Settings.settings['skrub'] = {};
-    if (!Settings.settings['skrub']['skrub']) return this.restrictReply("No-one's a skrub.");
-    return this.restrictReply("The skrub is " + Settings.settings['skrub']['skrub'] + ".");
+    if (!Settings.settings['skrub']['skrub']) return this.reply("No-one's a skrub.");
+    return this.reply("The skrub is " + Settings.settings['skrub']['skrub'] + ".");
 	},
 	
 	setskrub: function(arg, by, room, cmd) {
