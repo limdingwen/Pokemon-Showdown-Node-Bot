@@ -1,5 +1,5 @@
 /*
-	Commands for Games feature
+	Commands for Skrub feature
 */
 
 Settings.addPermissions(['setskrub']);
@@ -12,21 +12,26 @@ exports.commands = {
 	/* General commands */
 	skrub: function (arg, by, room, cmd) {
 		if (!Settings.settings['skrub']) Settings.settings['skrub'] = {};
-    if (!Settings.settings['skrub']['skrub']) return this.reply("No-one's a skrub.");
-    return this.reply("The skrub is " + Settings.settings['skrub']['skrub'] + ".");
+		var skrub = Settings.settings['skrub']['skrub'];
+		
+    if (!skrub) return this.restrictReply("No-one's a skrub.");
+    return this.restrictReply("The skrub is " + skrub + ".");
 	},
 	
 	setskrub: function(arg, by, room, cmd) {
 	  if (!this.can("setskrub")) return false;
 	  if (!Settings.settings['skrub']) Settings.settings['skrub'] = {};
-	  Settings.settings['skrub']['skrub'] = arg;
-	  return this.reply("The skrub has been set to " + Settings.settings['skrub']['skrub'] + ".");
+	  var skrub = arg;
+	  
+	  Settings.settings['skrub']['skrub'] = skrub;
+	  return this.reply("The skrub has been set to " + skrub + ".");
 	},
 	
 	clearskrub: function(arg, by, room, cmd) {
 	  if (!this.can("setskrub")) return false;
 	  if (!Settings.settings['skrub']) Settings.settings['skrub'] = {};
+
 	  Settings.settings['skrub']['skrub'] = undefined;
-	  return this.reply("The skrub has been cleared of his skrubness.");
+	  return this.reply("The skrub has been cleared of their skrubness.");
 	}
 };
