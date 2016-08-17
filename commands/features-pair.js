@@ -32,7 +32,12 @@ exports.commands = {
 		if (args.length != 2) return this.restrictReply("Please pair up two people/Pokemon.");
 		if (args[0].length > 19 || args[1].length > 19) return this.restrictReply("Names must be up to 19 characters long.");
 	  
-		this.restrictReply(args[0] + " and " + args[1] + " are " + Math.abs(((args[0].trim().hashCode() + args[1].trim().hashCode()) * seed) % max).toString() + "% compatible!");
+	  var results; // For special troll results
+	  if ((args[0].trim() == "Gekkonidae" && args[1].trim() == "Liziee") || (args[0].trim() == "Liziee" && args[1].trim() == "Gekkonidae")) results = 100000;
+	  else if ((args[0].trim() == "EriselleClaraHyn" && args[1].trim() == "Marshall De Vos") || (args[0].trim() == "Marshall De Vos" && args[1].trim() == "EriselleClaraHyn")) results = -5;
+	  else results = Math.abs(((args[0].trim().hashCode() + args[1].trim().hashCode()) * seed) % max);
+	  
+		this.restrictReply(args[0] + " and " + args[1] + " are " + results.toString() + "% compatible!");
 	},
 	
 	rawpair: function (arg, by, room, cmd) {
