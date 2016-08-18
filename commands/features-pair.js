@@ -14,43 +14,97 @@ String.prototype.hashCode = function() {
 };
 
 initialPair = {
-  'seed': 123456,
-  'max': 100
+  "seed": 123456,
+  "max": 100,
+  "specials": [
+    {
+      "pair": ["Gekkonidae", "Liziee"],
+      "result": "100000"
+    },
+    {
+      "pair": ["Spotted Hyena", "Hydre(Hydreigon)"],
+      "result": "100000"
+    },
+    {
+      "pair": ["Gekkonidae", "Ignis (Charmander)"],
+      "result": "Lizard madness"
+    },
+    {
+      "pair": ["EriselleClaraHyn", "Marshall De Vos"],
+      "result": "-5"
+    },
+    {
+      "pair": ["And his name", "is"],
+      "result": "JOHN CENA"
+    },
+    {
+      "pair": ["Hillary", "Trump"],
+      "result": "Death of America"
+    },
+    {
+      "pair": ["Gekk", "Onidae"],
+      "result": "Holy pineapple"
+    },
+    {
+      "pair": ["Red Marissa", "longsword"],
+      "result": "RUN"
+    }
+  ]
+}; // I intend to move this to pair.json soon.
+
+function toCalc(name) {
+  return name.toLowerCase().replace(/[\W_]/, ""); // Makes it case-insensitive and removes symbols and spaces.
 }
 
 exports.commands = {
 	/* Fast aliases */
-	//Add games aliases here. Example -> pa: 'pokeanagrams',
+	//Add games aliases here. Example -> pa: "pokeanagrams",
 
 	/* General commands */
 	pair: function (arg, by, room, cmd) {
-	  if (!Settings.settings['pair']) Settings.settings['pair'] = initialPair;
-	  var seed = Settings.settings['pair']['seed'];
-	  var max = Settings.settings['pair']['max'];
-	  
+	  if (!Settings.settings.pair) Settings.settings.pair = initialPair;
+	  var seed = Settings.settings.pair.seed;
+	  var max = Settings.settings.pair.max;
+	  var specials = Settings.settings.pair.specials;
+
 	  var args = arg.split(",");
 		if (args.length != 2) return this.restrictReply("Please pair up two people/Pokemon.");
 		if (args[0].length > 19 || args[1].length > 19) return this.restrictReply("Names must be up to 19 characters long.");
 	  
-	  var results; // For special troll results
-	  if ((args[0].trim() == "Gekkonidae" && args[1].trim() == "Liziee") || (args[0].trim() == "Liziee" && args[1].trim() == "Gekkonidae")) results = 100000;
-	  else if ((args[0].trim() == "EriselleClaraHyn" && args[1].trim() == "Marshall De Vos") || (args[0].trim() == "Marshall De Vos" && args[1].trim() == "EriselleClaraHyn")) results = -5;
-	  else results = Math.abs(((args[0].trim().hashCode() + args[1].trim().hashCode()) * seed) % max);
+	  var argsCalc = args.map(toCalc);
+
+	  var result;
+	  for (var i = 0; i < specials.length; i++) {
+	    var special = specials[i];
+	    
+	    var specialCalc = special.pair.map(toCalc);
+
+	    if ((argsCalc[0] == specialCalc[0] && argsCalc[1] == specialCalc[1]) || (argsCalc[0] == specialCalc[1] && argsCalc[1] == specialCalc[0])) result = special.result;
+	  }
 	  
-		this.restrictReply(args[0] + " and " + args[1] + " are " + results.toString() + "% compatible!");
+	  if (!result) result = Math.abs(((argsCalc[0].hashCode() + argsCalc[1].hashCode()) * seed) % max).toString();
+		this.restrictReply(args[0] + " and " + args[1] + " are " + result + "% compatible!");
 	},
 	
 	rawpair: function (arg, by, room, cmd) {
-	  if (!this.isRanked('admin')) return false;
+	  if (!this.isRanked("admin")) return false;
 	  
 	  var args = arg.split(",");
 		if (args.length != 2) return this.restrictReply("Please pair up two people/Pokemon.");
 		if (args[0].length > 19 || args[1].length > 19) return this.restrictReply("Names must be up to 19 characters long.");
 		
-		var arg0Hash = args[0].trim().hashCode();
-		var arg1Hash = args[1].trim().hashCode();
+		var argsCalc = args.map(toCalc);
+		var arg0Hash = argsCalc[0].hashCode();
+		var arg1Hash = argsCalc[1].hashCode();
 		var hash = arg0Hash + arg1Hash;
 	  
 		this.restrictReply(arg0Hash.toString() + ", " + arg1Hash.toString() + ", Total: " + hash.toString());
+	},
+	
+	reloadpairs: function (arg, by, room, cmd) {
+	  if (!this.isRanked("admin")) return false;
+	  
+  	Settings.settings.pair = initialPair;
+  	this.reply("Pairs reloaded.");
 	}
 };
