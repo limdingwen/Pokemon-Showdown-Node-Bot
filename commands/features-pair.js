@@ -13,7 +13,7 @@ String.prototype.hashCode = function() {
   return hash;
 };
 
-initialPair = {
+var initialPair = {
   "seed": 123456,
   "max": 100,
   "specials": [
@@ -53,7 +53,7 @@ initialPair = {
 }; // I intend to move this to pair.json soon.
 
 function toCalc(name) {
-  return name.toLowerCase().replace(/[\W_]/, ""); // Makes it case-insensitive and removes symbols and spaces.
+  return name.toLowerCase().trim().replace(/[\W_]/g, ""); // Makes it case-insensitive and removes symbols and spaces.
 }
 
 exports.commands = {
